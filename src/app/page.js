@@ -2,13 +2,98 @@
 import productos from "../../data/productos";
 import Header from "./components/Header";
 import { useState, useEffect } from "react";
+const slides = [
+  {
+    imagen: "/Sliders/IMG001.png",
+    titulo: "Todo lo que necesitas, en un solo lugar.",
+    descripcion: "Abarrotes, bebidas, panadería, botanas y mucho más.",
+  },
+  {
+    imagen: "/Sliders/IMG002.png",
+    titulo: "Calidad y variedad para tu familia.",
+    descripcion: "Encuentra productos para cada momento del día.",
+  },
+  {
+    imagen: "/Sliders/IMG003.png",
+    titulo: "El antojo perfecto para compartir.",
+    descripcion: "Botanas, bebidas y todo para tus reuniones.",
+  },
+  {
+    imagen: "/Sliders/IMG004.png",
+    titulo: "Siempre frías. Siempre listas.",
+    descripcion: "Refrescos, energizantes y bebidas para cada ocasión.",
+  },
+  {
+    imagen: "/Sliders/IMG005.png",
+    titulo: "Lo esencial para tu hogar.",
+    descripcion: "La canasta básica que necesitas todos los días.",
+  },
+  {
+    imagen: "/Sliders/IMG006.png",
+    titulo: "Frescura que se disfruta.",
+    descripcion: "Lácteos, quesos y productos seleccionados.",
+  },
+  {
+    imagen: "/Sliders/IMG007.png",
+    titulo: "Todo para cuidar tu hogar.",
+    descripcion: "Limpieza e higiene al alcance de tu mano.",
+  },
+  {
+    imagen: "/Sliders/IMG008.png",
+    titulo: "Siempre cerca de ti.",
+    descripcion: "Atención amable y productos para toda la familia.",
+  },
+  {
+    imagen: "/Sliders/IMG009.png",
+    titulo: "Tu compra hasta la puerta de casa.",
+    descripcion: "Compra fácil, rápido y sin salir de casa.",
+  },
+  {
+    imagen: "/Sliders/IMG010.png",
+    titulo: "Miscelánea Dos Hermanos",
+    descripcion: "Todo lo que necesitas, más cerca de ti.",
+  },
+  {
+  imagen: "/Sliders/IMG011.png",
+  titulo: "El kit perfecto para el fin de semana.",
+  descripcion: "Bebidas, jugos y todo para empezar bien el día.",
+},
+{
+  imagen: "/Sliders/IMG012.png",
+  titulo: "Helados y paletas para refrescar tu día.",
+  descripcion: "Disfruta tus favoritos de Holanda en cualquier momento.",
+},
+{
+  imagen: "/Sliders/IMG013.png",
+  titulo: "Cuidamos también a tus mascotas.",
+  descripcion: "Encuentra alimento Pedigree para consentirlas.",
+},
+{
+  imagen: "/Sliders/IMG014.png",
+  titulo: "Desayuno rápido para toda la familia.",
+  descripcion: "Leche, café, cereal y galletas para empezar el día.",
+},
+{
+  imagen: "/Sliders/IMG015.png",
+  titulo: "Paga como prefieras.",
+  descripcion: "Aceptamos efectivo y tarjetas para tu comodidad.",
+},
+];
 
 export default function Home() {
+  const [slideActual, setSlideActual] = useState(0);
   const [search, setSearch] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [carrito, setCarrito] = useState([]);
   const [productoAgregado, setProductoAgregado] = useState("");
   const [carritoAbierto, setCarritoAbierto] = useState(false);
+  useEffect(() => {
+  const intervalo = setInterval(() => {
+    setSlideActual((actual) => (actual + 1) % slides.length);
+  }, 4000);
+
+  return () => clearInterval(intervalo);
+}, []);
   useEffect(() => {
   if (carritoAbierto) {
     document.body.style.overflow = "hidden";
@@ -327,48 +412,195 @@ const totalCarrito = carrito.reduce(
 )}
 </section>
 
-      {/* HERO */}
-      <section
-       id="inicio"
+      {/* HERO - CARRUSEL */}
+<section
+  id="inicio"
+  style={{
+    position: "relative",
+    width: "100%",
+    height: "430px",
+    overflow: "hidden",
+    backgroundColor: "#111",
+  }}
+>
+  {slides.map((slide, index) => (
+    <div
+      key={slide.imagen}
+      style={{
+        position: "absolute",
+        inset: 0,
+        opacity: index === slideActual ? 1 : 0,
+        transition: "opacity 1s ease-in-out",
+        pointerEvents: index === slideActual ? "auto" : "none",
+      }}
+    >
+      <img
+        src={slide.imagen}
+        alt={slide.titulo}
         style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+
+      {/* Capa oscura */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
           background:
-            "linear-gradient(135deg, #ffd60a 0%, #ffb703 100%)",
-          padding: "80px 20px",
-          textAlign: "center",
+            "linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.30) 48%, rgba(0,0,0,0.08) 100%)",
+        }}
+      />
+
+      {/* Texto */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "8%",
+          transform: "translateY(-50%)",
+          maxWidth: "650px",
+          color: "#ffffff",
+          zIndex: 2,
+          textShadow: "0 2px 8px rgba(0,0,0,0.55)",
         }}
       >
         <h1
           style={{
             fontSize: "48px",
-            marginBottom: "15px",
+            lineHeight: "1.1",
+            marginBottom: "18px",
+            fontWeight: "800",
           }}
         >
-          Todo lo que necesitas,
-          <br />
-          sin salir de casa.
+          {slide.titulo}
         </h1>
 
         <p
           style={{
-            fontSize: "20px",
-            maxWidth: "700px",
-            margin: "0 auto",
+            fontSize: "21px",
+            lineHeight: "1.5",
+            marginBottom: "28px",
           }}
         >
-          Abarrotes, bebidas, limpieza, dulces, higiene y más.
-          Recibe tu pedido en minutos.
+          {slide.descripcion}
         </p>
 
-        <div
+        <button
+          type="button"
+          onClick={() =>
+            document
+              .getElementById("categorias")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
           style={{
-            marginTop: "30px",
+            backgroundColor: "#d62828",
+            color: "#ffffff",
+            border: "none",
+            padding: "15px 30px",
+            borderRadius: "10px",
+            fontSize: "17px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
           }}
         >
-          <button style={primaryButton}>
-            🛒 Comprar ahora
-          </button>
-        </div>
-      </section>
+          🛒 Comprar ahora
+        </button>
+      </div>
+    </div>
+  ))}
+
+  {/* Flecha izquierda */}
+  <button
+    type="button"
+    aria-label="Imagen anterior"
+    onClick={() =>
+      setSlideActual(
+        (slideActual - 1 + slides.length) % slides.length
+      )
+    }
+    style={{
+      position: "absolute",
+      left: "20px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 5,
+      width: "48px",
+      height: "48px",
+      borderRadius: "50%",
+      border: "1px solid rgba(255,255,255,0.7)",
+      backgroundColor: "rgba(0,0,0,0.35)",
+      color: "#ffffff",
+      fontSize: "32px",
+      cursor: "pointer",
+    }}
+  >
+    ‹
+  </button>
+
+  {/* Flecha derecha */}
+  <button
+    type="button"
+    aria-label="Siguiente imagen"
+    onClick={() =>
+      setSlideActual((slideActual + 1) % slides.length)
+    }
+    style={{
+      position: "absolute",
+      right: "20px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 5,
+      width: "48px",
+      height: "48px",
+      borderRadius: "50%",
+      border: "1px solid rgba(255,255,255,0.7)",
+      backgroundColor: "rgba(0,0,0,0.35)",
+      color: "#ffffff",
+      fontSize: "32px",
+      cursor: "pointer",
+    }}
+  >
+    ›
+  </button>
+
+  {/* Indicadores */}
+  <div
+    style={{
+      position: "absolute",
+      bottom: "20px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      display: "flex",
+      gap: "9px",
+      zIndex: 5,
+    }}
+  >
+    {slides.map((_, index) => (
+      <button
+        key={index}
+        type="button"
+        aria-label={`Ir a imagen ${index + 1}`}
+        onClick={() => setSlideActual(index)}
+        style={{
+          width: index === slideActual ? "28px" : "11px",
+          height: "11px",
+          borderRadius: "20px",
+          border: "none",
+          backgroundColor:
+            index === slideActual
+              ? "#ffd60a"
+              : "rgba(255,255,255,0.75)",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+        }}
+      />
+    ))}
+  </div>
+</section>
 
       {/* CATEGORIAS */}
       <section

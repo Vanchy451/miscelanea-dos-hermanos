@@ -72,15 +72,16 @@ export default function Header({
           }}
         >
           <img
-            src="/logo.png"
-            alt="2 Hermanos Tienda de Abarrotes"
-            style={{
-              width: isScrolled ? "65px" : "150px",
-              height: isScrolled ? "65px" : "150px",
-              transition: "width 0.4s ease, height 0.4s ease",
-              objectFit: "contain",
-            }}
-          />
+  src="/logo.png"
+  alt="2 Hermanos Tienda de Abarrotes"
+  style={{
+    width: isScrolled ? "180px" : "240px",
+    height: isScrolled ? "90px" : "120px",
+    objectFit: "contain",
+    transform: "scale(1.55)",
+    transition: "all 0.4s ease",
+  }}
+/>
         </a>
 
         {/* NOMBRE DEL NEGOCIO */}
