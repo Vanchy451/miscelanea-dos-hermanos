@@ -275,7 +275,7 @@ const totalCarrito = carrito.reduce(
   carritoAbierto={carritoAbierto}
   
 />
-<div style={{ height: "210px" }} />
+<div className="header-spacer" />
 
       <section
   style={{
@@ -415,6 +415,7 @@ const totalCarrito = carrito.reduce(
       {/* HERO - CARRUSEL */}
 <section
   id="inicio"
+  className="hero-carousel"
   style={{
     position: "relative",
     width: "100%",
@@ -456,6 +457,7 @@ const totalCarrito = carrito.reduce(
 
       {/* Texto */}
       <div
+      className="hero-content"
         style={{
           position: "absolute",
           top: "50%",
@@ -468,6 +470,7 @@ const totalCarrito = carrito.reduce(
         }}
       >
         <h1
+        className="hero-title"
           style={{
             fontSize: "48px",
             lineHeight: "1.1",
@@ -479,6 +482,7 @@ const totalCarrito = carrito.reduce(
         </h1>
 
         <p
+        className="hero-description"
           style={{
             fontSize: "21px",
             lineHeight: "1.5",
@@ -516,12 +520,14 @@ const totalCarrito = carrito.reduce(
   {/* Flecha izquierda */}
   <button
     type="button"
+    className="hero-arrow hero-arrow-left"
     aria-label="Imagen anterior"
     onClick={() =>
       setSlideActual(
         (slideActual - 1 + slides.length) % slides.length
       )
     }
+  
     style={{
       position: "absolute",
       left: "20px",
@@ -544,6 +550,7 @@ const totalCarrito = carrito.reduce(
   {/* Flecha derecha */}
   <button
     type="button"
+    className="hero-arrow hero-arrow-right"
     aria-label="Siguiente imagen"
     onClick={() =>
       setSlideActual((slideActual + 1) % slides.length)
@@ -569,6 +576,7 @@ const totalCarrito = carrito.reduce(
 
   {/* Indicadores */}
   <div
+    className="hero-dots"
     style={{
       position: "absolute",
       bottom: "20px",
@@ -621,10 +629,10 @@ const totalCarrito = carrito.reduce(
         </h2>
 
         <div
+        className="categories-grid"
           style={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(180px,1fr))",
+            gridTemplateColumns:  "repeat(auto-fit,minmax(180px,1fr))",
             gap: "20px",
           }}
         >
@@ -759,7 +767,8 @@ const totalCarrito = carrito.reduce(
             Productos destacados
           </h2>
 
-          <div
+<div
+  className="products-grid"
   style={{
     display: "grid",
     gridTemplateColumns:
