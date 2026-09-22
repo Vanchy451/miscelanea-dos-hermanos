@@ -4,80 +4,109 @@ import Header from "./components/Header";
 import { useState, useEffect } from "react";
 const slides = [
   {
+    imagen: "/Sliders/IMG009.png",
+    titulo: "Atención cercana y servicio de confianza.",
+    descripcion:
+      "En Miscelánea 2 Hermanos te atendemos con amabilidad y rapidez.",
+  },
+
+  {
     imagen: "/Sliders/IMG001.png",
     titulo: "Todo lo que necesitas, en un solo lugar.",
-    descripcion: "Abarrotes, bebidas, panadería, botanas y mucho más.",
+    descripcion:
+      "Abarrotes, bebidas, panadería, productos frescos y mucho más.",
   },
+
   {
     imagen: "/Sliders/IMG002.png",
-    titulo: "Calidad y variedad para tu familia.",
-    descripcion: "Encuentra productos para cada momento del día.",
+    titulo: "Todo para tu familia.",
+    descripcion:
+      "Haz tus compras fácil y encuentra productos para todos en un solo lugar.",
   },
+
   {
     imagen: "/Sliders/IMG003.png",
-    titulo: "El antojo perfecto para compartir.",
-    descripcion: "Botanas, bebidas y todo para tus reuniones.",
+    titulo: "Tu compra hasta la puerta de casa.",
+    descripcion:
+      "Servicio a domicilio para que recibas lo que necesitas cómodamente.",
   },
+
   {
     imagen: "/Sliders/IMG004.png",
-    titulo: "Siempre frías. Siempre listas.",
-    descripcion: "Refrescos, energizantes y bebidas para cada ocasión.",
+    titulo: "Frescura para todos los días.",
+    descripcion:
+      "Frutas y verduras frescas para complementar las comidas de tu familia.",
   },
+
   {
     imagen: "/Sliders/IMG005.png",
-    titulo: "Lo esencial para tu hogar.",
-    descripcion: "La canasta básica que necesitas todos los días.",
+    titulo: "Bebidas bien frías para cualquier ocasión.",
+    descripcion:
+      "Refrescos, energizantes y bebidas listas para disfrutar.",
   },
+
   {
     imagen: "/Sliders/IMG006.png",
-    titulo: "Frescura que se disfruta.",
-    descripcion: "Lácteos, quesos y productos seleccionados.",
+    titulo: "El antojo perfecto para compartir.",
+    descripcion:
+      "Botanas, papitas y snacks para reuniones, partidos y momentos especiales.",
   },
+
   {
     imagen: "/Sliders/IMG007.png",
-    titulo: "Todo para cuidar tu hogar.",
-    descripcion: "Limpieza e higiene al alcance de tu mano.",
+    titulo: "Lo esencial para tu hogar.",
+    descripcion:
+      "Arroz, frijol, aceite, huevo, harina y productos de la canasta básica.",
   },
+
   {
     imagen: "/Sliders/IMG008.png",
-    titulo: "Siempre cerca de ti.",
-    descripcion: "Atención amable y productos para toda la familia.",
+    titulo: "Frescura y calidad para tu familia.",
+    descripcion:
+      "Leche, quesos, yogurts y productos refrigerados para todos los días.",
   },
-  {
-    imagen: "/Sliders/IMG009.png",
-    titulo: "Tu compra hasta la puerta de casa.",
-    descripcion: "Compra fácil, rápido y sin salir de casa.",
-  },
+
   {
     imagen: "/Sliders/IMG010.png",
-    titulo: "Miscelánea Dos Hermanos",
-    descripcion: "Todo lo que necesitas, más cerca de ti.",
+    titulo: "Todo para cuidar tu hogar.",
+    descripcion:
+      "Productos de limpieza e higiene para mantener tu casa limpia y fresca.",
   },
+
   {
-  imagen: "/Sliders/IMG011.png",
-  titulo: "El kit perfecto para el fin de semana.",
-  descripcion: "Bebidas, jugos y todo para empezar bien el día.",
-},
-{
-  imagen: "/Sliders/IMG012.png",
-  titulo: "Helados y paletas para refrescar tu día.",
-  descripcion: "Disfruta tus favoritos de Holanda en cualquier momento.",
-},
-{
-  imagen: "/Sliders/IMG013.png",
-  titulo: "Cuidamos también a tus mascotas.",
-  descripcion: "Encuentra alimento Pedigree para consentirlas.",
-},
-{
-  imagen: "/Sliders/IMG014.png",
-  titulo: "Desayuno rápido para toda la familia.",
-  descripcion: "Leche, café, cereal y galletas para empezar el día.",
-},
-{
-  imagen: "/Sliders/IMG015.png",
-  titulo: "Paga como prefieras.",
-  descripcion: "Aceptamos efectivo y tarjetas para tu comodidad.",
-},
+    imagen: "/Sliders/IMG011.png",
+    titulo: "Recarga tu día.",
+    descripcion:
+      "Electrolitos, Clamato, salsa y productos ideales para comenzar el día.",
+  },
+
+  {
+    imagen: "/Sliders/IMG012.png",
+    titulo: "Un momento fresco para disfrutar.",
+    descripcion:
+      "Helados y paletas Holanda para refrescar cualquier momento del día.",
+  },
+
+  {
+    imagen: "/Sliders/IMG013.png",
+    titulo: "También consentimos a tu mejor amigo.",
+    descripcion:
+      "Encuentra productos Pedigree para alimentar y cuidar a tu mascota.",
+  },
+
+  {
+    imagen: "/Sliders/IMG014.png",
+    titulo: "Empieza el día en familia.",
+    descripcion:
+      "Leche, café, cereal y galletas para disfrutar un desayuno práctico.",
+  },
+
+  {
+    imagen: "/Sliders/IMG015.png",
+    titulo: "Paga como prefieras.",
+    descripcion:
+      "Aceptamos efectivo y tarjetas para hacer tus compras más fáciles.",
+  },
 ];
 
 export default function Home() {
@@ -435,16 +464,36 @@ const totalCarrito = carrito.reduce(
         pointerEvents: index === slideActual ? "auto" : "none",
       }}
     >
-      <img
-        src={slide.imagen}
-        alt={slide.titulo}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
+      {/* Fondo desenfocado */}
+<img
+  src={slide.imagen}
+  alt=""
+  aria-hidden="true"
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    filter: "blur(18px) brightness(0.65)",
+    transform: "scale(1.08)",
+  }}
+/>
 
+{/* Imagen principal completa */}
+<img
+  src={slide.imagen}
+  alt={slide.titulo}
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    objectPosition: "center center",
+    zIndex: 1,
+  }}
+/>
       {/* Capa oscura */}
       <div
         style={{
@@ -452,6 +501,7 @@ const totalCarrito = carrito.reduce(
           inset: 0,
           background:
             "linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.30) 48%, rgba(0,0,0,0.08) 100%)",
+            zIndex: 2,
         }}
       />
 
@@ -465,7 +515,7 @@ const totalCarrito = carrito.reduce(
           transform: "translateY(-50%)",
           maxWidth: "650px",
           color: "#ffffff",
-          zIndex: 2,
+          zIndex: 3,
           textShadow: "0 2px 8px rgba(0,0,0,0.55)",
         }}
       >
