@@ -839,7 +839,7 @@ const totalCarrito = carrito.reduce(
     No encontramos productos.
   </div>
 )}
-            {productosFiltrados.map((producto) => (
+            {productos.map((producto) => (
               <div
                 key={producto.id}
                 style={cardStyle}
