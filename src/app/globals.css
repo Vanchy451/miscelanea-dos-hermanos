@@ -456,3 +456,31 @@ body{
     overflow: visible !important;
   }
 }
+/* ENCABEZADO MÁS COMPACTO EN COMPUTADORA */
+@media (min-width: 769px) {
+  .header-main {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    min-height: 115px !important;
+  }
+
+  .header-logo {
+    width: 200px !important;
+    height: 95px !important;
+    object-fit: contain !important;
+    transform: none !important;
+  }
+
+  .header-logo-link {
+    width: 200px !important;
+  }
+
+  .header-negocio h1 {
+    font-size: 28px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .header-negocio p {
+    margin-top: 0 !important;
+  }
+}
