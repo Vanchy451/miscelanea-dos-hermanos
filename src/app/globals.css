@@ -539,3 +539,99 @@ body{
     transform: scale(1.35) !important;
   }
 }
+/* ==================================================
+   MEJORAS DEL ENCABEZADO
+================================================== */
+
+/* UBICACIÓN DEL NEGOCIO */
+.header-location {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* ANIMACIÓN DEL MENÚ */
+.desktop-nav a {
+  position: relative;
+  text-decoration: none;
+  padding-bottom: 8px;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.desktop-nav a::after {
+  content: "";
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 0;
+  height: 3px;
+
+  background: #d62828;
+  border-radius: 20px;
+
+  transform: translateX(-50%);
+  transition: width 0.25s ease;
+}
+
+.desktop-nav a:hover {
+  color: #d62828 !important;
+  transform: translateY(-1px);
+}
+
+.desktop-nav a:hover::after {
+  width: 70%;
+}
+
+/* OCULTAR UBICACIÓN EN CELULAR PARA NO SATURAR EL HEADER */
+@media (max-width: 768px) {
+  .header-location {
+    display: none !important;
+  }
+}
+/* ==================================================
+   SECCIÓN NOSOTROS
+================================================== */
+
+.about-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 20px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.07);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.about-icon {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+
+.about-card h3 {
+  color: #172554;
+  margin-bottom: 8px;
+}
+
+.about-card p {
+  color: #6b7280;
+  line-height: 1.5;
+}

@@ -40,19 +40,23 @@ export default function Header({
           />
         </a>
 
-        {/* NOMBRE */}
         <div className="header-negocio">
-          <h1>MISCELÁNEA 2 HERMANOS</h1>
-          <p>Todo lo que necesitas en un solo lugar.</p>
-        </div>
+  <h1>MISCELÁNEA 2 HERMANOS</h1>
 
-        {/* MENÚ DE COMPUTADORA */}
+  <p>Todo lo que necesitas en un solo lugar.</p>
+
+  <span className="header-location">
+    📍 Santiago Pinotepa Nacional, Oaxaca
+  </span>
+</div>
+
         <nav className="desktop-nav">
-          <a href="#inicio">Inicio</a>
-          <a href="#categorias">Categorías</a>
-          <a href="#promociones">Promociones</a>
-          <a href="#contacto">Contacto</a>
-        </nav>
+  <a href="#inicio">Inicio</a>
+  <a href="#categorias">Categorías</a>
+  <a href="#promociones">Promociones</a>
+  <a href="#nosotros">Nosotros</a>
+  <a href="#contacto">Contacto</a>
+</nav>
 
         {/* BOTÓN MENÚ CELULAR */}
         <button
@@ -92,7 +96,9 @@ export default function Header({
           <a href="#promociones" onClick={cerrarMenu}>
             Promociones
           </a>
-
+          <a href="#nosotros" onClick={cerrarMenu}>
+            Nosotros
+          </a>
           <a href="#contacto" onClick={cerrarMenu}>
             Contacto
           </a>

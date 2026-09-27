@@ -965,7 +965,88 @@ const totalCarrito = carrito.reduce(
           </div>
         </div>
       </section>
+{/* =========================
+    SECCIÓN NOSOTROS
+========================= */}
+<section
+  id="nosotros"
+  style={{
+    padding: "70px 20px",
+    background: "#f8fafc",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1100px",
+      margin: "0 auto",
+      textAlign: "center",
+    }}
+  >
+    <p
+      style={{
+        color: "#d62828",
+        fontWeight: "800",
+        marginBottom: "8px",
+        letterSpacing: "1px",
+      }}
+    >
+      CONÓCENOS
+    </p>
 
+    <h2
+      style={{
+        fontSize: "32px",
+        color: "#172554",
+        marginBottom: "20px",
+      }}
+    >
+      Miscelánea 2 Hermanos
+    </h2>
+
+    <p
+      style={{
+        maxWidth: "800px",
+        margin: "0 auto",
+        fontSize: "17px",
+        lineHeight: "1.7",
+        color: "#4b5563",
+      }}
+    >
+      Somos una tienda local en Santiago Pinotepa Nacional, Oaxaca,
+      dedicada a ofrecer productos para el hogar y la familia.
+      En Miscelánea 2 Hermanos puedes encontrar abarrotes, bebidas,
+      botanas, lácteos, helados, productos de limpieza, ferretería
+      y mucho más.
+    </p>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: "20px",
+        marginTop: "40px",
+      }}
+    >
+      <div className="about-card">
+        <div className="about-icon">🛒</div>
+        <h3>Variedad</h3>
+        <p>Productos para tus compras y necesidades de todos los días.</p>
+      </div>
+
+      <div className="about-card">
+        <div className="about-icon">🤝</div>
+        <h3>Atención cercana</h3>
+        <p>Buscamos ofrecer una atención amable, rápida y de confianza.</p>
+      </div>
+
+      <div className="about-card">
+        <div className="about-icon">🚚</div>
+        <h3>Servicio a domicilio</h3>
+        <p>Realiza tu compra fácilmente y recibe tus productos de forma práctica.</p>
+      </div>
+    </div>
+  </div>
+</section>
       {/* CONTACTO */}
       <section
       
