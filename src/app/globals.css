@@ -115,12 +115,12 @@ body{
 }
 
 .header-delivery {
-  background: #ffd60a;
-  padding: 8px 15px;
+  background: #0D6EFD;
+  color: white;
+  font-weight: 600;
   text-align: center;
-  color: #111111;
-  font-size: 14px;
-  font-weight: 700;
+  padding: 10px 12px;
+  border-bottom: 2px solid #d62828;
 }
 
 
@@ -414,5 +414,31 @@ body{
 
   .header-negocio p {
     display: none !important;
+  }
+}
+/* FRANJA DE SERVICIO A DOMICILIO */
+.header-delivery {
+  background: linear-gradient(90deg, #172554, #1e3a8a, #2563eb) !important;
+  color: #ffffff !important;
+
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+
+  padding: 10px 15px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 3px solid #d62828 !important;
+
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* CELULAR */
+@media (max-width: 768px) {
+  .header-delivery {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+    letter-spacing: 0 !important;
   }
 }
