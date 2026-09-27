@@ -442,3 +442,17 @@ body{
     letter-spacing: 0 !important;
   }
 }
+/* LOGO MÁS GRANDE EN COMPUTADORA */
+@media (min-width: 769px) {
+  .header-logo {
+    width: 230px !important;
+    height: 130px !important;
+    object-fit: contain !important;
+    transform: scale(1.8) !important;
+  }
+
+  .header-logo-link {
+    width: 230px !important;
+    overflow: visible !important;
+  }
+}
