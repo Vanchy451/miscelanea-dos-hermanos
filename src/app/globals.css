@@ -520,3 +520,22 @@ body{
     margin-top: 0 !important;
   }
 }
+/* AJUSTE FINAL DEL LOGO EN COMPUTADORA */
+@media (min-width: 769px) {
+
+  /* Logo cuando estamos arriba */
+  .header-logo {
+    width: 190px !important;
+    height: 90px !important;
+    object-fit: contain !important;
+    transform: scale(1.65) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  /* Logo cuando bajamos en la página */
+  .site-header.header-scrolled .header-logo {
+    width: 160px !important;
+    height: 70px !important;
+    transform: scale(1.35) !important;
+  }
+}
