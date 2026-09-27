@@ -484,3 +484,39 @@ body{
     margin-top: 0 !important;
   }
 }
+/* ANIMACIÓN DEL ENCABEZADO AL HACER SCROLL */
+@media (min-width: 769px) {
+
+  .header-main,
+  .header-logo,
+  .header-logo-link,
+  .header-negocio h1,
+  .header-negocio p {
+    transition: all 0.3s ease !important;
+  }
+
+  .site-header.header-scrolled .header-main {
+    min-height: 80px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .site-header.header-scrolled .header-logo {
+    width: 150px !important;
+    height: 70px !important;
+    transform: none !important;
+  }
+
+  .site-header.header-scrolled .header-logo-link {
+    width: 150px !important;
+  }
+
+  .site-header.header-scrolled .header-negocio h1 {
+    font-size: 22px !important;
+  }
+
+  .site-header.header-scrolled .header-negocio p {
+    font-size: 12px !important;
+    margin-top: 0 !important;
+  }
+}
