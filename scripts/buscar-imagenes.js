@@ -120,7 +120,7 @@ async function buscarImagen(producto) {
     }
 
     // Probar hasta 5 imagenes
-    const candidatos = resultados.slice(0, 5);
+    const candidatos = resultados.slice(1, 6);
 
     for (
       let i = 0;
@@ -273,8 +273,11 @@ async function iniciar() {
   let existentes = 0;
   let fallidas = 0;
 
-  for (let i = 0; i < productos.length; i++) {
-    const producto = productos[i];
+  const productosAProcesar = productos.filter(
+  (producto) => producto.id === 27
+);
+
+for (const producto of productosAProcesar) {
 
     // Comprobar si ya existe imagen
     const existente =

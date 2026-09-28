@@ -626,7 +626,7 @@ const productos = [
     "ganancia": 7.04,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/52.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -864,7 +864,7 @@ const productos = [
     "ganancia": 5.06,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/69.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1578,7 +1578,7 @@ const productos = [
     "ganancia": 9.9,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/120.webp",
     "estado": "DISPONIBLE"
   },
   {
