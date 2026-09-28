@@ -206,7 +206,7 @@ const productos = [
     "ganancia": 8.36,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/15.webp",
     "estado": "DISPONIBLE"
   },
   {
@@ -542,7 +542,7 @@ const productos = [
     "ganancia": 5.5,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/41.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -556,7 +556,7 @@ const productos = [
     "ganancia": 3.3,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/47.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -710,7 +710,7 @@ const productos = [
     "ganancia": 3.96,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/58.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -766,7 +766,7 @@ const productos = [
     "ganancia": 4.4,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/62.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1102,7 +1102,7 @@ const productos = [
     "ganancia": 7.7,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/86.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1116,7 +1116,7 @@ const productos = [
     "ganancia": 5.5,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/87.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1270,7 +1270,7 @@ const productos = [
     "ganancia": 9.9,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/98.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1396,7 +1396,7 @@ const productos = [
     "ganancia": 4.84,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/107.webp",
     "estado": "DISPONIBLE"
   },
   {
@@ -1438,7 +1438,7 @@ const productos = [
     "ganancia": 7.7,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/110.png",
     "estado": "DISPONIBLE"
   },
   {
@@ -1494,7 +1494,7 @@ const productos = [
     "ganancia": 7.7,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/114.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1508,7 +1508,7 @@ const productos = [
     "ganancia": 6.6,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/115.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1536,7 +1536,7 @@ const productos = [
     "ganancia": 8.8,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/117.jpg",
     "estado": "DISPONIBLE"
   },
   {
@@ -1690,7 +1690,7 @@ const productos = [
     "ganancia": 6.6,
     "stock": 20,
     "minimo": 5,
-    "imagen": "",
+    "imagen": "/productos/128.jpg",
     "estado": "DISPONIBLE"
   },
   {
