@@ -54,7 +54,7 @@ export default function Header({
   <a href="#inicio">Inicio</a>
   <a href="#categorias">Categorías</a>
   <a href="#promociones">Promociones</a>
-  <a href="#nosotros">Nosotros</a>
+  <a href="/nosotros">Nosotros</a>
   <a href="#contacto">Contacto</a>
 </nav>
 
@@ -96,7 +96,7 @@ export default function Header({
           <a href="#promociones" onClick={cerrarMenu}>
             Promociones
           </a>
-          <a href="#nosotros" onClick={cerrarMenu}>
+          <a href="/nosotros" onClick={cerrarMenu}>
             Nosotros
           </a>
           <a href="#contacto" onClick={cerrarMenu}>
@@ -112,3 +112,4 @@ export default function Header({
     </header>
   );
 }
+
