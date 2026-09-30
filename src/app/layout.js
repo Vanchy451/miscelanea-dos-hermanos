@@ -1,3 +1,4 @@
+import { CarritoProvider } from "./context/CarritoContext";
 import StructuredData from "./components/StructuredData";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -96,9 +97,12 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <StructuredData />
-        {children}
-      </body>
+  <StructuredData />
+
+  <CarritoProvider>
+    {children}
+  </CarritoProvider>
+</body>
     </html>
   );
 }

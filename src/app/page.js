@@ -1,4 +1,6 @@
 ﻿"use client";
+import Link from "next/link";
+import { useCarrito } from "./context/CarritoContext";
 import productos from "../../data/productos";
 import Header from "./components/Header";
 import { useState, useEffect } from "react";
@@ -113,7 +115,7 @@ export default function Home() {
   const [slideActual, setSlideActual] = useState(0);
   const [search, setSearch] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-  const [carrito, setCarrito] = useState([]);
+  const { carrito, setCarrito, agregarAlCarrito } = useCarrito();
   const [productoAgregado, setProductoAgregado] = useState("");
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   useEffect(() => {
@@ -153,30 +155,7 @@ const confirmarPedido = () => {
   setPedidoAbierto(false);
   setResumenPedido(true);
 };
-const agregarAlCarrito = (producto) => {
-  setCarrito((carritoActual) => {
-    const productoExistente = carritoActual.find(
-      (item) => item.nombre === producto.nombre
-    );
 
-    if (productoExistente) {
-      return carritoActual.map((item) =>
-        item.nombre === producto.nombre
-          ? { ...item, cantidad: item.cantidad + 1 }
-          : item
-      );
-    }
-
-    return [
-      ...carritoActual,
-      {
-        ...producto,
-        cantidad: 1,
-        seleccionado: true,
-      },
-    ];
-  });
-};
 const cambiarSeleccionProducto = (nombreProducto) => {
   setCarrito((carritoActual) =>
     carritoActual.map((item) =>
@@ -844,28 +823,37 @@ const totalCarrito = carrito.reduce(
                 key={producto.id}
                 style={cardStyle}
               >
-                <div
+  <Link
+  href={`/producto/${producto.id}`}
   style={{
-    height: "150px",
-    borderRadius: "10px",
-    marginBottom: "15px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    overflow: "hidden",
+    display: "block",
+    textDecoration: "none",
   }}
 >
-  <img
-    src={producto.imagen || undefined}
-    alt={producto.nombre}
+  <div
     style={{
-      width: "100%",
-      height: "100%",
-      objectFit: "contain",
+      height: "150px",
+      borderRadius: "10px",
+      marginBottom: "15px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ffffff",
+      overflow: "hidden",
+      cursor: "pointer",
     }}
-  />
-</div>
+  >
+    <img
+      src={producto.imagen || undefined}
+      alt={producto.nombre}
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
+      }}
+    />
+  </div>
+</Link>
 <span
   style={{
     display: "inline-block",
@@ -880,7 +868,21 @@ const totalCarrito = carrito.reduce(
 >
   {producto.categoria}
 </span>
-                <h3>{producto.nombre}</h3>
+                <Link
+  href={`/producto/${producto.id}`}
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <h3
+    style={{
+      cursor: "pointer",
+    }}
+  >
+    {producto.nombre}
+  </h3>
+</Link>
 
                 <p
                   style={{
