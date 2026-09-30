@@ -4,6 +4,7 @@ export default function StructuredData() {
     "@type": "GroceryStore",
 
     name: "Miscelánea 2 Hermanos",
+    alternateName: "Miscelánea Dos Hermanos",
 
     url: "https://miscelanea-dos-hermanos.vercel.app",
 

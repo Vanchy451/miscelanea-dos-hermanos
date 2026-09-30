@@ -17,12 +17,12 @@ export const metadata = {
   metadataBase: new URL("https://miscelanea-dos-hermanos.vercel.app"),
 
   title: {
-    default: "Miscelánea 2 Hermanos | Abarrotes y servicio a domicilio",
+    default: "Miscelánea 2 Hermanos | Abarrotes en Pinotepa Nacional",
     template: "%s | Miscelánea 2 Hermanos",
   },
 
   description:
-    "Miscelánea 2 Hermanos: abarrotes, bebidas, botanas, lácteos, helados, productos de limpieza, ferretería y más. Compra fácil y servicio a domicilio.",
+  "Miscelánea 2 Hermanos en Santiago Pinotepa Nacional, Oaxaca. Tienda de abarrotes, bebidas, botanas, lácteos, limpieza y servicio a domicilio.",
 
   keywords: [
     "Miscelánea 2 Hermanos",
@@ -64,10 +64,10 @@ verification: {
     url: "/",
     siteName: "Miscelánea 2 Hermanos",
 
-    title: "Miscelánea 2 Hermanos | Todo lo que necesitas cerca de ti",
+    title: "Miscelánea 2 Hermanos | Abarrotes en Pinotepa Nacional",
 
     description:
-      "Abarrotes, bebidas, botanas, lácteos, helados, limpieza, ferretería y más. Compra fácil y servicio a domicilio.",
+      "Miscelánea 2 Hermanos en Santiago Pinotepa Nacional, Oaxaca. Tienda de abarrotes, bebidas, botanas, lácteos, limpieza y servicio a domicilio.",
 
     images: [
       {
@@ -84,7 +84,7 @@ verification: {
     title: "Miscelánea 2 Hermanos",
 
     description:
-      "Abarrotes, bebidas, botanas, lácteos, helados, limpieza, ferretería y más.",
+      "Miscelánea 2 Hermanos en Santiago Pinotepa Nacional, Oaxaca. Tienda de abarrotes, bebidas, botanas, lácteos, limpieza y servicio a domicilio.",
 
     images: ["/Sliders/IMG009.png"],
   },
@@ -105,4 +105,4 @@ export default function RootLayout({ children }) {
 </body>
     </html>
   );
-}
+}   
