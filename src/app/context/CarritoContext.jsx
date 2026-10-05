@@ -16,6 +16,10 @@ export function CarritoProvider({ children }) {
       const productoExistente = carritoActual.find(
         (item) => item.id === producto.id
       );
+      const stock = Number(producto.stock);
+      if (!Number.isFinite(stock) || stock <= 0 || (productoExistente?.cantidad || 0) >= stock) {
+        return carritoActual;
+      }
 
       if (productoExistente) {
         return carritoActual.map((item) =>

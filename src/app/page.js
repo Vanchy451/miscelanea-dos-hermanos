@@ -4,6 +4,7 @@ import { useCarrito } from "./context/CarritoContext";
 import productos from "../../data/productos";
 import Header from "./components/Header";
 import { useState, useEffect } from "react";
+const PEDIDO_MINIMO = 150;
 const slides = [
   {
     imagen: "/Sliders/IMG009.png",
@@ -107,7 +108,7 @@ const slides = [
     imagen: "/Sliders/IMG015.png",
     titulo: "Paga como prefieras.",
     descripcion:
-      "Aceptamos efectivo y tarjetas para hacer tus compras más fáciles.",
+      "Paga al recibir tu pedido o por transferencia bancaria.",
   },
 ];
 
@@ -142,13 +143,35 @@ export default function Home() {
 const [telefonoCliente, setTelefonoCliente] = useState("");
 const [direccionCliente, setDireccionCliente] = useState("");
 const [notasPedido, setNotasPedido] = useState("");
+const [metodoPago, setMetodoPago] = useState("contra_entrega");
+const [ciudadConfirmada, setCiudadConfirmada] = useState(false);
+const validarPedido = () => {
+  if (totalCompra < PEDIDO_MINIMO) {
+    alert("La compra minima para entrega a domicilio es de $150.");
+    return false;
+  }
+  if (!ciudadConfirmada) {
+    alert("Solo entregamos dentro de Pinotepa Nacional, Oaxaca.");
+    return false;
+  }
+  if (productosSeleccionados.some((producto) => producto.cantidad > Number(producto.stock) || !(Number(producto.stock) > 0))) {
+    alert("Revisa las cantidades: un producto supera las existencias disponibles.");
+    return false;
+  }
+  return true;
+};
 const confirmarPedido = () => {
+  if (!validarPedido()) return;
   if (
     !nombreCliente.trim() ||
     !telefonoCliente.trim() ||
     !direccionCliente.trim()
   ) {
     alert("⚠️ Por favor completa tu nombre, teléfono y dirección.");
+    return;
+  }
+  if (!/^(?:52)?\d{10}$/.test(telefonoCliente.replace(/\D/g, ""))) {
+    alert("Ingresa un telefono de 10 digitos, opcionalmente con prefijo +52.");
     return;
   }
 
@@ -160,7 +183,7 @@ const cambiarSeleccionProducto = (nombreProducto) => {
   setCarrito((carritoActual) =>
     carritoActual.map((item) =>
       item.nombre === nombreProducto
-        ? { ...item, seleccionado: !item.seleccionado }
+        ? { ...item, seleccionado: item.seleccionado === false }
         : item
     )
   );
@@ -234,11 +257,6 @@ const productosFiltrados = productos.filter((producto) => {
 
   return coincideBusqueda && coincideCategoria;
 });
-const totalCarrito = carrito.reduce(
-  (total, producto) =>
-    total + Number(producto.precio.replace("$", "")) * producto.cantidad,
-  0
-);
   const menuButton = {
     background: "transparent",
     border: "none",
@@ -269,7 +287,7 @@ const totalCarrito = carrito.reduce(
 };
 
  return (
-  <main
+  <main className="store-home"
     style={{
       minHeight: "100vh",
       backgroundColor: "#f5f7fa",
@@ -285,7 +303,7 @@ const totalCarrito = carrito.reduce(
 />
 <div className="header-spacer" />
 
-      <section
+      <section className="store-search"
   style={{
     backgroundColor: "#ffffff",
     padding: "20px",
@@ -346,7 +364,7 @@ const totalCarrito = carrito.reduce(
       }}
     >
       <strong>
-        🔎 Resultados para: "{search}"
+        🔎 Resultados para: &quot;{search}&quot;
       </strong>
     </div>
 
@@ -697,7 +715,7 @@ const totalCarrito = carrito.reduce(
 ))}
         </div>
       </section>
-      {/* PROMOCIONES */}LISTI
+      {/* PROMOCIONES */}
 <section
   id="promociones"
   style={{
@@ -987,7 +1005,7 @@ const totalCarrito = carrito.reduce(
       </section>
       {/* CARRITO */}
 {carritoAbierto && (
-  <div
+  <div className="cart-overlay"
   style={{
     position: "fixed",
     top: "110px",
@@ -1000,7 +1018,7 @@ const totalCarrito = carrito.reduce(
     paddingTop: "0",
   }}
 >
-    <div
+    <div className="cart-container"
       style={{
         maxWidth: "1400px",
         margin: "0 auto",
@@ -1008,7 +1026,7 @@ const totalCarrito = carrito.reduce(
       }}
     >
       {/* ENCABEZADO DEL CARRITO */}
-      <div
+      <div className="cart-heading"
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -1094,7 +1112,7 @@ const totalCarrito = carrito.reduce(
           </button>
         </div>
       ) : (
-        <div
+        <div className="cart-layout"
           style={{
             display: "grid",
             gridTemplateColumns: "minmax(0, 1fr) 360px",
@@ -1485,7 +1503,7 @@ const totalCarrito = carrito.reduce(
                   fontWeight: "800",
                 }}
               >
-                <span>Total</span>
+                <span>Subtotal</span>
 
                 <span style={{ color: "#d62828" }}>
                   ${totalCompra}
@@ -1494,9 +1512,9 @@ const totalCarrito = carrito.reduce(
 
               <button
                 type="button"
-                disabled={productosSeleccionados.length === 0}
+                disabled={productosSeleccionados.length === 0 || totalCompra < PEDIDO_MINIMO}
                 onClick={() => {
-                  if (productosSeleccionados.length > 0) {
+                  if (productosSeleccionados.length > 0 && totalCompra >= PEDIDO_MINIMO) {
                     setPedidoAbierto(true);
                   }
                 }}
@@ -1505,7 +1523,7 @@ const totalCarrito = carrito.reduce(
                   marginTop: "22px",
                   padding: "15px",
                   backgroundColor:
-                    productosSeleccionados.length === 0
+                    productosSeleccionados.length === 0 || totalCompra < PEDIDO_MINIMO
                       ? "#cccccc"
                       : "#d62828",
                   color: "#ffffff",
@@ -1514,13 +1532,18 @@ const totalCarrito = carrito.reduce(
                   fontSize: "16px",
                   fontWeight: "bold",
                   cursor:
-                    productosSeleccionados.length === 0
+                    productosSeleccionados.length === 0 || totalCompra < PEDIDO_MINIMO
                       ? "not-allowed"
                       : "pointer",
                 }}
               >
                 Continuar pedido
               </button>
+              <p style={{ marginTop: "12px", fontSize: "14px", color: "#555" }}>
+                Entregas solo en Pinotepa Nacional, Oaxaca. Compra minima: $150.
+                {totalCompra < PEDIDO_MINIMO && ` Te faltan $${(PEDIDO_MINIMO - totalCompra).toFixed(2)}.`}
+                {" "}El costo de envio se confirma con la tienda antes de aceptar el pedido.
+              </p>
 
               <button
                 type="button"
@@ -1553,7 +1576,7 @@ const totalCarrito = carrito.reduce(
       {/* FOOTER */}
       
 {pedidoAbierto && (
-  <div
+  <div className="checkout-overlay"
     style={{
       position: "fixed",
       inset: 0,
@@ -1565,7 +1588,7 @@ const totalCarrito = carrito.reduce(
       zIndex: 3000,
     }}
   >
-    <div
+    <div className="checkout-panel"
       style={{
         backgroundColor: "#ffffff",
         width: "100%",
@@ -1609,7 +1632,7 @@ const totalCarrito = carrito.reduce(
           marginBottom: "25px",
         }}
       >
-        Completa tus datos para continuar con el pedido.
+        Entrega en Pinotepa Nacional, Oaxaca. Compra minima de $150.
       </p>
 
       <label
@@ -1718,6 +1741,20 @@ onChange={(e) => setDireccionCliente(e.target.value)}
         }}
       />
 
+      <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "20px" }}>
+        <input type="checkbox" checked={ciudadConfirmada} onChange={(e) => setCiudadConfirmada(e.target.checked)} />
+        Mi direccion esta dentro de Pinotepa Nacional, Oaxaca.
+      </label>
+      <fieldset style={{ border: "1px solid #ccc", padding: "15px", marginBottom: "20px" }}>
+        <legend>Metodo de pago</legend>
+        <label style={{ display: "block", marginBottom: "12px" }}>
+          <input type="radio" name="metodoPago" value="contra_entrega" checked={metodoPago === "contra_entrega"} onChange={(e) => setMetodoPago(e.target.value)} /> Pago al entregar
+        </label>
+        <label style={{ display: "block" }}>
+          <input type="radio" name="metodoPago" value="transferencia" checked={metodoPago === "transferencia"} onChange={(e) => setMetodoPago(e.target.value)} /> Transferencia bancaria
+        </label>
+        {metodoPago === "transferencia" && <p style={{ fontSize: "14px", marginTop: "12px" }}>La tienda te compartira los datos bancarios al confirmar el pedido. El pago queda pendiente de verificacion.</p>}
+      </fieldset>
       <button
         type="button"
         onClick={confirmarPedido}
@@ -1740,7 +1777,7 @@ onChange={(e) => setDireccionCliente(e.target.value)}
 )}
 {/* RESUMEN DEL PEDIDO */}
 {resumenPedido && (
-  <div
+  <div className="checkout-overlay"
     style={{
       position: "fixed",
       inset: 0,
@@ -1752,7 +1789,7 @@ onChange={(e) => setDireccionCliente(e.target.value)}
       zIndex: 4000,
     }}
   >
-    <div
+    <div className="checkout-panel"
       style={{
         backgroundColor: "#ffffff",
         width: "100%",
@@ -1793,7 +1830,7 @@ onChange={(e) => setDireccionCliente(e.target.value)}
       {/* PRODUCTOS */}
       <h3>🛒 Productos</h3>
 
-      {carrito.map((producto, index) => (
+      {productosSeleccionados.map((producto, index) => (
         <div
           key={`${producto.nombre}-${index}`}
           style={{
@@ -1846,10 +1883,10 @@ onChange={(e) => setDireccionCliente(e.target.value)}
           fontWeight: "bold",
         }}
       >
-        <span>Total:</span>
+        <span>Subtotal de productos:</span>
 
         <span style={{ color: "#d62828" }}>
-          ${totalCarrito}
+          ${totalCompra.toFixed(2)}
         </span>
       </div>
 
@@ -1877,6 +1914,9 @@ onChange={(e) => setDireccionCliente(e.target.value)}
         <p>
           <strong>Dirección:</strong> {direccionCliente}
         </p>
+        <p><strong>Ciudad:</strong> Pinotepa Nacional, Oaxaca</p>
+        <p><strong>Envio:</strong> Costo pendiente de confirmar con la tienda. No incluido en el subtotal.</p>
+        <p><strong>Pago:</strong> {metodoPago === "transferencia" ? "Transferencia bancaria (pendiente de verificacion)" : "Al entregar"}</p>
 
         {notasPedido.trim() && (
           <p>
@@ -1889,7 +1929,8 @@ onChange={(e) => setDireccionCliente(e.target.value)}
       <button
   type="button"
   onClick={() => {
-    const productosPedido = carrito
+    if (!validarPedido()) return;
+    const productosPedido = productosSeleccionados
       .map(
         (producto) =>
           `• ${producto.nombre} x${producto.cantidad} = $${
@@ -1915,12 +1956,18 @@ ${productosPedido}
 
 ---
 
-*TOTAL: $${totalCarrito}*
+*TOTAL DE PRODUCTOS: $${totalCompra.toFixed(2)}*
+
+*ENVIO: costo pendiente de confirmar antes de aceptar el pedido. No incluido en el subtotal.*
+
+*PAGO*
+${metodoPago === "transferencia" ? "Transferencia bancaria (pendiente de verificacion)" : "Al entregar"}
 
 ---
 
 *DIRECCIÓN DE ENTREGA*
 ${direccionCliente}
+Pinotepa Nacional, Oaxaca
 
 *NOTAS*
 ${notasPedido || "Sin notas"}
@@ -1936,7 +1983,7 @@ Gracias por tu compra.`;
       mensaje
   )}`;
 
-    window.open(whatsapp, "_blank");
+    window.open(whatsapp, "_blank", "noopener,noreferrer");
   }}
   style={{
     width: "100%",
@@ -1969,4 +2016,3 @@ Gracias por tu compra.`;
     </main>
   );
 }
-    "npm run dev"

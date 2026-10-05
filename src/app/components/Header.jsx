@@ -107,7 +107,7 @@ export default function Header({
 
       {/* FRANJA AMARILLA */}
       <div className="header-delivery">
-        🚚 Servicio a domicilio · Compra fácil y rápido
+        🚚 Entregas en Pinotepa Nacional · Compra mínima $150
       </div>
     </header>
   );
