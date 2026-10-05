@@ -4,7 +4,10 @@ import { useCarrito } from "./context/CarritoContext";
 import productos from "../../data/productos";
 import Header from "./components/Header";
 import { useState, useEffect } from "react";
+import { Home as HomeIcon, Grid2X2, ShoppingCart, X } from "lucide-react";
+import ProductImage from "./components/ProductImage";
 const PEDIDO_MINIMO = 150;
+const normalizarBusqueda = (valor) => String(valor || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 const slides = [
   {
     imagen: "/Sliders/IMG009.png",
@@ -145,35 +148,31 @@ const [direccionCliente, setDireccionCliente] = useState("");
 const [notasPedido, setNotasPedido] = useState("");
 const [metodoPago, setMetodoPago] = useState("contra_entrega");
 const [ciudadConfirmada, setCiudadConfirmada] = useState(false);
+const [erroresPedido, setErroresPedido] = useState({});
+const limpiarError = (campo) => setErroresPedido((actual) => ({ ...actual, [campo]: "" }));
 const validarPedido = () => {
+  const errores = {};
   if (totalCompra < PEDIDO_MINIMO) {
-    alert("La compra minima para entrega a domicilio es de $150.");
-    return false;
+    errores.pedido = "La compra minima para entrega a domicilio es de $150.";
   }
   if (!ciudadConfirmada) {
-    alert("Solo entregamos dentro de Pinotepa Nacional, Oaxaca.");
-    return false;
+    errores.ciudad = "Confirma que tu direccion esta dentro de Pinotepa Nacional.";
   }
   if (productosSeleccionados.some((producto) => producto.cantidad > Number(producto.stock) || !(Number(producto.stock) > 0))) {
-    alert("Revisa las cantidades: un producto supera las existencias disponibles.");
-    return false;
+    errores.pedido = "Revisa las cantidades: un producto supera las existencias disponibles.";
   }
-  return true;
+  if (!nombreCliente.trim()) errores.nombre = "Escribe tu nombre.";
+  if (!/^(?:52)?\d{10}$/.test(telefonoCliente.replace(/\D/g, ""))) {
+    errores.telefono = "Escribe un telefono de 10 digitos; puedes incluir +52.";
+  }
+  if (!direccionCliente.trim()) errores.direccion = "Escribe la calle, numero, colonia y referencias.";
+  setErroresPedido(errores);
+  const primerCampo = ["nombre", "telefono", "direccion", "ciudad"].find((campo) => errores[campo]);
+  if (primerCampo) document.getElementById(`pedido-${primerCampo}`)?.focus();
+  return Object.keys(errores).length === 0;
 };
 const confirmarPedido = () => {
   if (!validarPedido()) return;
-  if (
-    !nombreCliente.trim() ||
-    !telefonoCliente.trim() ||
-    !direccionCliente.trim()
-  ) {
-    alert("⚠️ Por favor completa tu nombre, teléfono y dirección.");
-    return;
-  }
-  if (!/^(?:52)?\d{10}$/.test(telefonoCliente.replace(/\D/g, ""))) {
-    alert("Ingresa un telefono de 10 digitos, opcionalmente con prefijo +52.");
-    return;
-  }
 
   setPedidoAbierto(false);
   setResumenPedido(true);
@@ -247,13 +246,12 @@ const productosPorCategoria = carrito.reduce((categorias, producto) => {
 }, {});
 
 const productosFiltrados = productos.filter((producto) => {
-  const coincideBusqueda = producto.nombre
-    .toLowerCase()
-    .includes(search.toLowerCase());
+  const coincideBusqueda = normalizarBusqueda(producto.nombre)
+    .includes(normalizarBusqueda(search));
 
   const coincideCategoria =
     categoriaSeleccionada === "" ||
-    producto.categoria === categoriaSeleccionada;
+    normalizarBusqueda(producto.categoria) === normalizarBusqueda(categoriaSeleccionada);
 
   return coincideBusqueda && coincideCategoria;
 });
@@ -319,6 +317,8 @@ const productosFiltrados = productos.filter((producto) => {
     }}
   >
     <input
+      id="buscar-productos"
+      aria-label="Buscar productos"
       type="text"
       placeholder="Buscar productos..."
       value={search}
@@ -332,7 +332,11 @@ const productosFiltrados = productos.filter((producto) => {
       }}
     />
 
+    {search && <button type="button" className="mobile-only search-clear" aria-label="Borrar busqueda" title="Borrar busqueda" onClick={() => { setSearch(""); document.getElementById("buscar-productos")?.focus(); }}><X size={20} aria-hidden="true" /></button>}
+
     <button
+      type="button"
+      onClick={() => document.getElementById("productos")?.scrollIntoView({ behavior: "smooth", block: "start" })}
       style={{
         backgroundColor: "#d62828",
         color: "#fff",
@@ -390,7 +394,7 @@ const productosFiltrados = productos.filter((producto) => {
             borderBottom: "1px solid #eeeeee",
           }}
         >
-          <img
+          <ProductImage
             src={producto.imagen || null}
             alt={producto.nombre}
             style={{
@@ -698,9 +702,12 @@ const productosFiltrados = productos.filter((producto) => {
   <button
     key={categoria}
     type="button"
-    onClick={() =>
-      setCategoriaSeleccionada(categoria.replace(/^.*?\s/, ""))
-    }
+    aria-pressed={normalizarBusqueda(categoriaSeleccionada) === normalizarBusqueda(categoria.replace(/^.*?\s/, ""))}
+    onClick={() => {
+      const nombreCategoria = categoria.replace(/^.*?\s/, "");
+      setCategoriaSeleccionada((actual) => normalizarBusqueda(actual) === normalizarBusqueda(nombreCategoria) ? "" : nombreCategoria);
+      if (window.matchMedia("(max-width: 768px)").matches) document.getElementById("productos")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }}
     style={{
       ...cardStyle,
       textAlign: "center",
@@ -714,6 +721,7 @@ const productosFiltrados = productos.filter((producto) => {
   </button>
 ))}
         </div>
+        <button type="button" className="mobile-only categories-all" aria-pressed={categoriaSeleccionada === ""} onClick={() => setCategoriaSeleccionada("")}>Todos</button>
       </section>
       {/* PROMOCIONES */}
 <section
@@ -793,7 +801,7 @@ const productosFiltrados = productos.filter((producto) => {
 </section>
 
       {/* PRODUCTOS */}
-      <section
+      <section id="productos"
         style={{
           padding: "60px 20px",
           backgroundColor: "#fff",
@@ -813,6 +821,10 @@ const productosFiltrados = productos.filter((producto) => {
           >
             Productos destacados
           </h2>
+          <div className="mobile-only catalog-status" aria-live="polite">
+            <span>{categoriaSeleccionada || "Todos los productos"} · {productosFiltrados.length} resultados</span>
+            {(categoriaSeleccionada || search) && <button type="button" onClick={() => { setCategoriaSeleccionada(""); setSearch(""); }}>Ver todos</button>}
+          </div>
 
 <div
   className="products-grid"
@@ -836,7 +848,7 @@ const productosFiltrados = productos.filter((producto) => {
     No encontramos productos.
   </div>
 )}
-            {productos.map((producto) => (
+            {productosFiltrados.map((producto) => (
               <div
                 key={producto.id}
                 style={cardStyle}
@@ -861,7 +873,7 @@ const productosFiltrados = productos.filter((producto) => {
       cursor: "pointer",
     }}
   >
-    <img
+    <ProductImage
       src={producto.imagen || undefined}
       alt={producto.nombre}
       style={{
@@ -1266,7 +1278,7 @@ const productosFiltrados = productos.filter((producto) => {
   }}
 />
 
-<img
+<ProductImage
   src={producto.imagen || undefined}
   alt={producto.nombre}
   style={{
@@ -1634,8 +1646,10 @@ const productosFiltrados = productos.filter((producto) => {
       >
         Entrega en Pinotepa Nacional, Oaxaca. Compra minima de $150.
       </p>
+      {erroresPedido.pedido && <p role="alert" className="field-error">{erroresPedido.pedido}</p>}
 
       <label
+        htmlFor="pedido-nombre"
         style={{
           display: "block",
           fontWeight: "bold",
@@ -1647,9 +1661,13 @@ const productosFiltrados = productos.filter((producto) => {
 
       <input
         type="text"
+        id="pedido-nombre"
+        autoComplete="name"
+        aria-invalid={!!erroresPedido.nombre}
+        aria-describedby={erroresPedido.nombre ? "error-nombre" : undefined}
         placeholder="Tu nombre"
         value={nombreCliente}
-onChange={(e) => setNombreCliente(e.target.value)}
+onChange={(e) => { setNombreCliente(e.target.value); limpiarError("nombre"); }}
         style={{
           width: "100%",
           padding: "13px",
@@ -1661,7 +1679,10 @@ onChange={(e) => setNombreCliente(e.target.value)}
         }}
       />
 
+      {erroresPedido.nombre && <p id="error-nombre" role="alert" className="field-error">{erroresPedido.nombre}</p>}
+
       <label
+        htmlFor="pedido-telefono"
         style={{
           display: "block",
           fontWeight: "bold",
@@ -1673,9 +1694,14 @@ onChange={(e) => setNombreCliente(e.target.value)}
 
       <input
         type="tel"
+        id="pedido-telefono"
+        autoComplete="tel"
+        inputMode="tel"
+        aria-invalid={!!erroresPedido.telefono}
+        aria-describedby={erroresPedido.telefono ? "error-telefono" : undefined}
         placeholder="Tu número de teléfono"
         value={telefonoCliente}
-        onChange={(e) => setTelefonoCliente(e.target.value)}
+        onChange={(e) => { setTelefonoCliente(e.target.value); limpiarError("telefono"); }}
         style={{
           width: "100%",
           padding: "13px",
@@ -1687,7 +1713,10 @@ onChange={(e) => setNombreCliente(e.target.value)}
         }}
       />
 
+      {erroresPedido.telefono && <p id="error-telefono" role="alert" className="field-error">{erroresPedido.telefono}</p>}
+
       <label
+        htmlFor="pedido-direccion"
         style={{
           display: "block",
           fontWeight: "bold",
@@ -1698,9 +1727,13 @@ onChange={(e) => setNombreCliente(e.target.value)}
       </label>
 
       <textarea
+        id="pedido-direccion"
+        autoComplete="street-address"
+        aria-invalid={!!erroresPedido.direccion}
+        aria-describedby={erroresPedido.direccion ? "error-direccion" : undefined}
         placeholder="Calle, número, colonia, referencias..."
         value={direccionCliente}
-onChange={(e) => setDireccionCliente(e.target.value)}
+onChange={(e) => { setDireccionCliente(e.target.value); limpiarError("direccion"); }}
         rows={4}
         style={{
           width: "100%",
@@ -1713,6 +1746,8 @@ onChange={(e) => setDireccionCliente(e.target.value)}
           boxSizing: "border-box",
         }}
       />
+
+      {erroresPedido.direccion && <p id="error-direccion" role="alert" className="field-error">{erroresPedido.direccion}</p>}
 
       <label
         style={{
@@ -1742,9 +1777,10 @@ onChange={(e) => setDireccionCliente(e.target.value)}
       />
 
       <label style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "20px" }}>
-        <input type="checkbox" checked={ciudadConfirmada} onChange={(e) => setCiudadConfirmada(e.target.checked)} />
+        <input id="pedido-ciudad" type="checkbox" aria-invalid={!!erroresPedido.ciudad} aria-describedby={erroresPedido.ciudad ? "error-ciudad" : undefined} checked={ciudadConfirmada} onChange={(e) => { setCiudadConfirmada(e.target.checked); limpiarError("ciudad"); }} />
         Mi direccion esta dentro de Pinotepa Nacional, Oaxaca.
       </label>
+      {erroresPedido.ciudad && <p id="error-ciudad" role="alert" className="field-error">{erroresPedido.ciudad}</p>}
       <fieldset style={{ border: "1px solid #ccc", padding: "15px", marginBottom: "20px" }}>
         <legend>Metodo de pago</legend>
         <label style={{ display: "block", marginBottom: "12px" }}>
@@ -1926,6 +1962,7 @@ onChange={(e) => setDireccionCliente(e.target.value)}
       </div>
 
       {/* BOTÓN FINAL */}
+      {erroresPedido.pedido && <p role="alert" className="field-error">{erroresPedido.pedido}</p>}
       <button
   type="button"
   onClick={() => {
@@ -2003,6 +2040,17 @@ Gracias por tu compra.`;
     </div>
   </div>
 )}
+      <nav className="mobile-bottom-nav" aria-label="Navegacion principal movil">
+        <button type="button" aria-label="Inicio" onClick={() => { setCarritoAbierto(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          <HomeIcon size={22} aria-hidden="true" /><span>Inicio</span>
+        </button>
+        <button type="button" aria-label="Categorias" onClick={() => { setCarritoAbierto(false); document.getElementById("categorias")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
+          <Grid2X2 size={22} aria-hidden="true" /><span>Categorias</span>
+        </button>
+        <button type="button" aria-label={`Carrito, ${carrito.reduce((total, item) => total + item.cantidad, 0)} articulos`} aria-pressed={carritoAbierto} onClick={() => setCarritoAbierto(!carritoAbierto)}>
+          <span className="bottom-cart-icon"><ShoppingCart size={22} aria-hidden="true" />{carrito.length > 0 && <span className="bottom-cart-count">{carrito.reduce((total, item) => total + item.cantidad, 0)}</span>}</span><span>Carrito</span>
+        </button>
+      </nav>
       <footer
         style={{
           backgroundColor: "#1f2937",

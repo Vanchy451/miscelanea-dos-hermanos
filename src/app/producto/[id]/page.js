@@ -3,6 +3,7 @@ import ProductosCarrusel from "../../components/ProductosCarrusel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import productos from "../../../../data/productos";
+import ProductImage from "../../components/ProductImage";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -158,7 +159,7 @@ export default async function ProductoPage({ params }) {
             }}
           >
             {producto.imagen ? (
-              <img
+              <ProductImage
                 src={producto.imagen}
                 alt={producto.nombre}
                 style={{

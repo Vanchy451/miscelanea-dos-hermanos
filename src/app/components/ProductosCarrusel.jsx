@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { useCarrito } from "../context/CarritoContext";
+import ProductImage from "./ProductImage";
 
 export default function ProductosCarrusel({
   titulo,
@@ -69,10 +70,11 @@ export default function ProductosCarrusel({
     >
       <div className="pc-imagen-contenedor">
         {item.imagen ? (
-          <img
+          <ProductImage
             src={item.imagen}
             alt={item.nombre}
             className="pc-imagen"
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
           />
         ) : (
           <span className="pc-sin-imagen">
