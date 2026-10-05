@@ -4,8 +4,9 @@ import { useCarrito } from "./context/CarritoContext";
 import productos from "../../data/productos";
 import Header from "./components/Header";
 import { useState, useEffect } from "react";
-import { Home as HomeIcon, Grid2X2, ShoppingCart, X } from "lucide-react";
+import { Home as HomeIcon, Grid2X2, ShoppingCart, X, Pencil } from "lucide-react";
 import ProductImage from "./components/ProductImage";
+import StockNotice from "./components/StockNotice";
 const PEDIDO_MINIMO = 150;
 const normalizarBusqueda = (valor) => String(valor || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 const slides = [
@@ -119,9 +120,18 @@ export default function Home() {
   const [slideActual, setSlideActual] = useState(0);
   const [search, setSearch] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-  const { carrito, setCarrito, agregarAlCarrito } = useCarrito();
+  const { carrito, setCarrito, agregarAlCarrito, obtenerDisponibilidad } = useCarrito();
   const [productoAgregado, setProductoAgregado] = useState("");
   const [carritoAbierto, setCarritoAbierto] = useState(false);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("carrito") !== "1") return;
+    // Read the product-page handoff after hydration to keep server markup stable.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCarritoAbierto(true);
+    url.searchParams.delete("carrito");
+    window.history.replaceState(window.history.state, "", url);
+  }, []);
   useEffect(() => {
   const intervalo = setInterval(() => {
     setSlideActual((actual) => (actual + 1) % slides.length);
@@ -145,6 +155,14 @@ export default function Home() {
   const [nombreCliente, setNombreCliente] = useState("");
 const [telefonoCliente, setTelefonoCliente] = useState("");
 const [direccionCliente, setDireccionCliente] = useState("");
+const [direccionCampos, setDireccionCampos] = useState({ calle: "", numero: "", colonia: "", referencias: "" });
+const direccionLibre = !!direccionCliente && !Object.values(direccionCampos).some((valor) => valor.trim());
+const actualizarDireccion = (campo, valor) => {
+  const nueva = { ...direccionCampos, [campo]: valor };
+  setDireccionCampos(nueva);
+  setDireccionCliente([nueva.calle.trim(), nueva.numero.trim() && `Numero ${nueva.numero.trim()}`, nueva.colonia.trim() && `Colonia ${nueva.colonia.trim()}`, nueva.referencias.trim() && `Referencias: ${nueva.referencias.trim()}`].filter(Boolean).join(", "));
+  setErroresPedido((actual) => ({ ...actual, [campo]: "", direccion: "" }));
+};
 const [notasPedido, setNotasPedido] = useState("");
 const [metodoPago, setMetodoPago] = useState("contra_entrega");
 const [ciudadConfirmada, setCiudadConfirmada] = useState(false);
@@ -165,9 +183,13 @@ const validarPedido = () => {
   if (!/^(?:52)?\d{10}$/.test(telefonoCliente.replace(/\D/g, ""))) {
     errores.telefono = "Escribe un telefono de 10 digitos; puedes incluir +52.";
   }
-  if (!direccionCliente.trim()) errores.direccion = "Escribe la calle, numero, colonia y referencias.";
+  if (window.matchMedia("(max-width: 768px)").matches && !direccionLibre) {
+    if (!direccionCampos.calle.trim()) errores.calle = "Escribe la calle.";
+    if (!direccionCampos.numero.trim()) errores.numero = "Escribe el numero o S/N.";
+    if (!direccionCampos.colonia.trim()) errores.colonia = "Escribe la colonia.";
+  } else if (!direccionCliente.trim()) errores.direccion = "Escribe la calle, numero, colonia y referencias.";
   setErroresPedido(errores);
-  const primerCampo = ["nombre", "telefono", "direccion", "ciudad"].find((campo) => errores[campo]);
+  const primerCampo = ["nombre", "telefono", "direccion", "calle", "numero", "colonia", "ciudad"].find((campo) => errores[campo]);
   if (primerCampo) document.getElementById(`pedido-${primerCampo}`)?.focus();
   return Object.keys(errores).length === 0;
 };
@@ -176,6 +198,9 @@ const confirmarPedido = () => {
 
   setPedidoAbierto(false);
   setResumenPedido(true);
+};
+const continuarPedido = () => {
+  if (productosSeleccionados.length > 0 && totalCompra >= PEDIDO_MINIMO) setPedidoAbierto(true);
 };
 
 const cambiarSeleccionProducto = (nombreProducto) => {
@@ -422,6 +447,7 @@ const productosFiltrados = productos.filter((producto) => {
 
           <button
             type="button"
+            disabled={obtenerDisponibilidad(producto).limiteAlcanzado}
             onClick={() => agregarAlCarrito(producto)}
             style={{
               backgroundColor: "#d62828",
@@ -433,7 +459,7 @@ const productosFiltrados = productos.filter((producto) => {
               fontWeight: "bold",
             }}
           >
-            Agregar
+            {obtenerDisponibilidad(producto).limiteAlcanzado ? "Sin disponibilidad" : "Agregar"}
           </button>
         </div>
       ))
@@ -944,7 +970,9 @@ const productosFiltrados = productos.filter((producto) => {
     </p>
   );
 })()}
+    <StockNotice producto={producto} />
     <button
+  disabled={obtenerDisponibilidad(producto).limiteAlcanzado}
   style={primaryButton}
   onClick={() => {
     agregarAlCarrito(producto);
@@ -955,7 +983,9 @@ const productosFiltrados = productos.filter((producto) => {
     }, 1200);
   }}
 >
-  {productoAgregado === producto.nombre
+  {obtenerDisponibilidad(producto).limiteAlcanzado
+    ? (obtenerDisponibilidad(producto).stock === 0 ? "Sin existencias" : "Límite alcanzado")
+    : productoAgregado === producto.nombre
     ? "✅ Agregado"
     : "Agregar al carrito"}
 </button>
@@ -1017,7 +1047,7 @@ const productosFiltrados = productos.filter((producto) => {
       </section>
       {/* CARRITO */}
 {carritoAbierto && (
-  <div className="cart-overlay"
+  <div className={`cart-overlay ${carrito.length > 0 ? "has-quick-summary" : ""}`}
   style={{
     position: "fixed",
     top: "110px",
@@ -1393,6 +1423,7 @@ const productosFiltrados = productos.filter((producto) => {
 
                           <button
                             type="button"
+                            disabled={obtenerDisponibilidad(producto).limiteAlcanzado}
                             onClick={() =>
                               agregarAlCarrito(producto)
                             }
@@ -1423,6 +1454,7 @@ const productosFiltrados = productos.filter((producto) => {
                           ) * producto.cantidad}
                         </strong>
                       </div>
+                      <StockNotice producto={producto} />
                     </div>
                   ))}
                 </div>
@@ -1524,12 +1556,9 @@ const productosFiltrados = productos.filter((producto) => {
 
               <button
                 type="button"
+                className="desktop-continue"
                 disabled={productosSeleccionados.length === 0 || totalCompra < PEDIDO_MINIMO}
-                onClick={() => {
-                  if (productosSeleccionados.length > 0 && totalCompra >= PEDIDO_MINIMO) {
-                    setPedidoAbierto(true);
-                  }
-                }}
+                onClick={continuarPedido}
                 style={{
                   width: "100%",
                   marginTop: "22px",
@@ -1715,6 +1744,7 @@ onChange={(e) => { setNombreCliente(e.target.value); limpiarError("nombre"); }}
 
       {erroresPedido.telefono && <p id="error-telefono" role="alert" className="field-error">{erroresPedido.telefono}</p>}
 
+      <div className={direccionLibre ? "address-free" : "address-free desktop-address"}>
       <label
         htmlFor="pedido-direccion"
         style={{
@@ -1733,7 +1763,7 @@ onChange={(e) => { setNombreCliente(e.target.value); limpiarError("nombre"); }}
         aria-describedby={erroresPedido.direccion ? "error-direccion" : undefined}
         placeholder="Calle, número, colonia, referencias..."
         value={direccionCliente}
-onChange={(e) => { setDireccionCliente(e.target.value); limpiarError("direccion"); }}
+onChange={(e) => { setDireccionCliente(e.target.value); setDireccionCampos({ calle: "", numero: "", colonia: "", referencias: "" }); limpiarError("direccion"); }}
         rows={4}
         style={{
           width: "100%",
@@ -1748,6 +1778,22 @@ onChange={(e) => { setDireccionCliente(e.target.value); limpiarError("direccion"
       />
 
       {erroresPedido.direccion && <p id="error-direccion" role="alert" className="field-error">{erroresPedido.direccion}</p>}
+      </div>
+      {!direccionLibre && <fieldset className="mobile-only structured-address">
+        <legend>Dirección de entrega</legend>
+        {[
+          ["calle", "Calle", "Nombre de la calle"],
+          ["numero", "Número o S/N", "Número exterior o S/N"],
+          ["colonia", "Colonia", "Nombre de la colonia"],
+          ["referencias", "Referencias (opcional)", "Entre calles, color de la casa..."],
+        ].map(([campo, etiqueta, placeholder]) => (
+          <div key={campo}>
+            <label htmlFor={`pedido-${campo}`}>{etiqueta}</label>
+            <input id={`pedido-${campo}`} value={direccionCampos[campo]} placeholder={placeholder} autoComplete={campo === "calle" ? "address-line1" : "off"} onChange={(e) => actualizarDireccion(campo, e.target.value)} aria-invalid={!!erroresPedido[campo]} aria-describedby={erroresPedido[campo] ? `error-${campo}` : undefined} />
+            {erroresPedido[campo] && <p id={`error-${campo}`} role="alert" className="field-error">{erroresPedido[campo]}</p>}
+          </div>
+        ))}
+      </fieldset>}
 
       <label
         style={{
@@ -1962,6 +2008,7 @@ onChange={(e) => { setDireccionCliente(e.target.value); limpiarError("direccion"
       </div>
 
       {/* BOTÓN FINAL */}
+      <button type="button" className="edit-order" onClick={() => { setResumenPedido(false); setPedidoAbierto(true); setErroresPedido({}); }} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", width: "100%", marginTop: "20px", padding: "12px", border: "1px solid #ddd", borderRadius: "8px", background: "white", cursor: "pointer" }}><Pencil size={18} aria-hidden="true" />Editar datos del pedido</button>
       {erroresPedido.pedido && <p role="alert" className="field-error">{erroresPedido.pedido}</p>}
       <button
   type="button"
@@ -2040,6 +2087,12 @@ Gracias por tu compra.`;
     </div>
   </div>
 )}
+      {carritoAbierto && carrito.length > 0 && !pedidoAbierto && !resumenPedido && (
+        <div className="mobile-only cart-quick-summary">
+          <div aria-live="polite"><span>Subtotal de productos</span><strong>${totalCompra.toFixed(2)}</strong>{totalCompra < PEDIDO_MINIMO && <small>Faltan ${(PEDIDO_MINIMO - totalCompra).toFixed(2)}</small>}</div>
+          <button type="button" disabled={productosSeleccionados.length === 0 || totalCompra < PEDIDO_MINIMO} onClick={continuarPedido}>Continuar pedido</button>
+        </div>
+      )}
       <nav className="mobile-bottom-nav" aria-label="Navegacion principal movil">
         <button type="button" aria-label="Inicio" onClick={() => { setCarritoAbierto(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
           <HomeIcon size={22} aria-hidden="true" /><span>Inicio</span>

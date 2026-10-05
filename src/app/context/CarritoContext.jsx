@@ -57,13 +57,19 @@ function setCarrito(valor) {
 
 export function CarritoProvider({ children }) {
   const carrito = useSyncExternalStore(subscribe, getSnapshot, () => carritoVacio);
+  const obtenerDisponibilidad = (producto) => {
+    const valor = Number(producto.stock);
+    const stock = Number.isFinite(valor) ? Math.max(0, Math.floor(valor)) : 0;
+    const cantidad = carrito.find((item) => item.id === producto.id)?.cantidad || 0;
+    return { stock, cantidad, limiteAlcanzado: cantidad >= stock };
+  };
 
   const agregarAlCarrito = (producto) => {
     setCarrito((carritoActual) => {
       const productoExistente = carritoActual.find(
         (item) => item.id === producto.id
       );
-      const stock = Number(producto.stock);
+      const stock = Math.floor(Number(producto.stock));
       if (!Number.isFinite(stock) || stock <= 0 || (productoExistente?.cantidad || 0) >= stock) {
         return carritoActual;
       }
@@ -95,6 +101,7 @@ export function CarritoProvider({ children }) {
         carrito,
         setCarrito,
         agregarAlCarrito,
+        obtenerDisponibilidad,
       }}
     >
       {children}

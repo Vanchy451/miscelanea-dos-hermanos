@@ -1,9 +1,11 @@
 "use client";
 
 import { useCarrito } from "../context/CarritoContext";
+import StockNotice from "./StockNotice";
 
 export default function BotonAgregarCarrito({ producto }) {
-  const { carrito, agregarAlCarrito } = useCarrito();
+  const { carrito, agregarAlCarrito, obtenerDisponibilidad } = useCarrito();
+  const { stock, limiteAlcanzado } = obtenerDisponibilidad(producto);
 
   const productoEnCarrito = carrito.find(
     (item) => item.id === producto.id
@@ -26,6 +28,7 @@ export default function BotonAgregarCarrito({ producto }) {
 
       <button
         type="button"
+        disabled={limiteAlcanzado}
         onClick={() => agregarAlCarrito(producto)}
         style={{
           width: "100%",
@@ -33,15 +36,16 @@ export default function BotonAgregarCarrito({ producto }) {
           padding: "15px 22px",
           border: "none",
           borderRadius: "10px",
-          background: "#d62828",
+          background: limiteAlcanzado ? "#777" : "#d62828",
           color: "#ffffff",
           fontSize: "17px",
           fontWeight: "800",
-          cursor: "pointer",
+          cursor: limiteAlcanzado ? "not-allowed" : "pointer",
         }}
       >
-        🛒 Agregar al carrito
+        {limiteAlcanzado ? (stock === 0 ? "Sin existencias" : "Límite alcanzado") : "🛒 Agregar al carrito"}
       </button>
+      <StockNotice producto={producto} />
     </div>
   );
 }

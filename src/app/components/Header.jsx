@@ -6,9 +6,21 @@ export default function Header({
   carrito,
   setCarritoAbierto,
   carritoAbierto,
+  homeHref = "",
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
+  useEffect(() => {
+    if (!menuMovilAbierto) return;
+    const cerrarConEscape = (evento) => {
+      if (evento.key === "Escape") {
+        setMenuMovilAbierto(false);
+        document.getElementById("mobile-menu-toggle")?.focus();
+      }
+    };
+    document.addEventListener("keydown", cerrarConEscape);
+    return () => document.removeEventListener("keydown", cerrarConEscape);
+  }, [menuMovilAbierto]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +44,7 @@ export default function Header({
     >
       <div className="header-main">
         {/* LOGO */}
-        <a href="#inicio" className="header-logo-link">
+        <a href={`${homeHref}#inicio`} className="header-logo-link">
           <img
             src="/logo.png"
             alt="Miscelánea Dos Hermanos"
@@ -51,19 +63,22 @@ export default function Header({
 </div>
 
         <nav className="desktop-nav">
-  <a href="#inicio">Inicio</a>
-  <a href="#categorias">Categorías</a>
-  <a href="#promociones">Promociones</a>
+  <a href={`${homeHref}#inicio`}>Inicio</a>
+  <a href={`${homeHref}#categorias`}>Categorías</a>
+  <a href={`${homeHref}#promociones`}>Promociones</a>
   <a href="/nosotros">Nosotros</a>
-  <a href="#contacto">Contacto</a>
+  <a href={`${homeHref}#contacto`}>Contacto</a>
 </nav>
 
         {/* BOTÓN MENÚ CELULAR */}
         <button
           type="button"
           className="mobile-menu-button"
+          id="mobile-menu-toggle"
+          aria-expanded={menuMovilAbierto}
+          aria-controls="mobile-menu"
           onClick={() => setMenuMovilAbierto(!menuMovilAbierto)}
-          aria-label="Abrir menú"
+          aria-label={menuMovilAbierto ? "Cerrar menú" : "Abrir menú"}
         >
           {menuMovilAbierto ? "✕" : "☰"}
         </button>
@@ -84,22 +99,22 @@ export default function Header({
 
       {/* MENÚ DE CELULAR */}
       {menuMovilAbierto && (
-        <nav className="mobile-nav">
-          <a href="#inicio" onClick={cerrarMenu}>
+        <nav className="mobile-nav" id="mobile-menu" aria-label="Menu movil">
+          <a href={`${homeHref}#inicio`} onClick={cerrarMenu}>
             Inicio
           </a>
 
-          <a href="#categorias" onClick={cerrarMenu}>
+          <a href={`${homeHref}#categorias`} onClick={cerrarMenu}>
             Categorías
           </a>
 
-          <a href="#promociones" onClick={cerrarMenu}>
+          <a href={`${homeHref}#promociones`} onClick={cerrarMenu}>
             Promociones
           </a>
           <a href="/nosotros" onClick={cerrarMenu}>
             Nosotros
           </a>
-          <a href="#contacto" onClick={cerrarMenu}>
+          <a href={`${homeHref}#contacto`} onClick={cerrarMenu}>
             Contacto
           </a>
         </nav>

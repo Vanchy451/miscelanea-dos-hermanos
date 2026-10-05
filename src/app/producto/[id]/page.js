@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import productos from "../../../../data/productos";
 import ProductImage from "../../components/ProductImage";
+import ProductHeader from "../../components/ProductHeader";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -92,13 +93,14 @@ export default async function ProductoPage({ params }) {
   complementarios = complementarios.slice(0, 12);
 
   return (
-    <main
+    <main className="product-detail"
       style={{
         minHeight: "100vh",
         background: "#f8fafc",
         paddingBottom: "70px",
       }}
     >
+      <ProductHeader />
       {/* BARRA SUPERIOR */}
       <div
         style={{
@@ -127,14 +129,14 @@ export default async function ProductoPage({ params }) {
       </div>
 
       {/* PRODUCTO PRINCIPAL */}
-      <section
+      <section className="product-detail-main"
         style={{
           maxWidth: "1200px",
           margin: "40px auto 0",
           padding: "0 20px",
         }}
       >
-        <div
+        <div className="product-detail-layout"
           style={{
             background: "#ffffff",
             borderRadius: "22px",
@@ -148,7 +150,7 @@ export default async function ProductoPage({ params }) {
           }}
         >
           {/* IMAGEN */}
-          <div
+          <div className="product-detail-photo"
             style={{
               minHeight: "400px",
               display: "flex",
@@ -175,7 +177,7 @@ export default async function ProductoPage({ params }) {
           </div>
 
           {/* INFORMACIÓN */}
-          <div>
+          <div className="product-detail-info">
             <span
               style={{
                 display: "inline-block",
@@ -239,7 +241,7 @@ export default async function ProductoPage({ params }) {
               }}
             >
               <strong style={{ color: "#15803d" }}>
-                ✓ Disponible en Miscelánea 2 Hermanos
+                {Number(producto.stock) > 0 ? "✓ Disponible en Miscelánea 2 Hermanos" : "Sin existencias por el momento"}
               </strong>
 
               <p

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { useCarrito } from "../context/CarritoContext";
 import ProductImage from "./ProductImage";
+import StockNotice from "./StockNotice";
 
 export default function ProductosCarrusel({
   titulo,
@@ -11,7 +12,7 @@ export default function ProductosCarrusel({
   productos,
 }) {
   const carruselRef = useRef(null);
-  const { carrito, agregarAlCarrito } = useCarrito();
+  const { carrito, agregarAlCarrito, obtenerDisponibilidad } = useCarrito();
 
   const mover = (direccion) => {
     if (!carruselRef.current) return;
@@ -116,20 +117,22 @@ export default function ProductosCarrusel({
     <button
       type="button"
       onClick={() => agregarAlCarrito(item)}
+      disabled={obtenerDisponibilidad(item).limiteAlcanzado}
       style={{
         width: "100%",
         marginTop: "14px",
         padding: "11px 8px",
         border: "none",
         borderRadius: "9px",
-        background: "#d62828",
+        background: obtenerDisponibilidad(item).limiteAlcanzado ? "#777" : "#d62828",
         color: "#ffffff",
         fontWeight: "700",
         cursor: "pointer",
       }}
     >
-      Agregar al carrito
+      {obtenerDisponibilidad(item).limiteAlcanzado ? (obtenerDisponibilidad(item).stock === 0 ? "Sin existencias" : "Limite alcanzado") : "Agregar al carrito"}
     </button>
+    <StockNotice producto={item} />
   </article>
 </div>
             ))}
