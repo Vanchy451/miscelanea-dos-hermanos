@@ -732,7 +732,8 @@ const productosFiltrados = productos.filter((producto) => {
     onClick={() => {
       const nombreCategoria = categoria.replace(/^.*?\s/, "");
       setCategoriaSeleccionada((actual) => normalizarBusqueda(actual) === normalizarBusqueda(nombreCategoria) ? "" : nombreCategoria);
-      if (window.matchMedia("(max-width: 768px)").matches) document.getElementById("productos")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setSearch("");
+      document.getElementById("productos")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }}
     style={{
       ...cardStyle,
@@ -829,6 +830,7 @@ const productosFiltrados = productos.filter((producto) => {
       {/* PRODUCTOS */}
       <section id="productos"
         style={{
+          scrollMarginTop: "115px",
           padding: "60px 20px",
           backgroundColor: "#fff",
         }}
@@ -864,14 +866,25 @@ const productosFiltrados = productos.filter((producto) => {
 >
             {productosFiltrados.length === 0 && (
   <div
+    role="status"
     style={{
+      gridColumn: "1 / -1",
       textAlign: "center",
       padding: "40px",
       fontSize: "18px",
       color: "#666",
     }}
   >
-    No encontramos productos.
+    <p>{categoriaSeleccionada
+      ? "Por el momento no tenemos productos disponibles en esta categoría."
+      : "No encontramos productos con esa búsqueda."}</p>
+    <button
+      type="button"
+      onClick={() => { setCategoriaSeleccionada(""); setSearch(""); }}
+      style={{ background: "none", border: "none", color: "#003580", textDecoration: "underline", cursor: "pointer", fontSize: "16px", padding: "12px" }}
+    >
+      Ver todos los productos
+    </button>
   </div>
 )}
             {productosFiltrados.map((producto) => (
