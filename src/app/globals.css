@@ -1,6 +1,22 @@
 @import "tailwindcss";
 
 .address-free { display: contents; }
+.catalog-status { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; color: #58635b; font-size: 14px; }
+.catalog-status button { min-height: 44px; padding: 8px; border: 0; background: transparent; color: #b82020; cursor: pointer; }
+.catalog-order { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; font-size: 14px; }
+.catalog-order select { max-width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid #d1d8d3; border-radius: 6px; background: #fff; color: #333; }
+.whatsapp-float { position: fixed; right: 22px; bottom: 24px; z-index: 900; display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: #168944; color: #fff; box-shadow: 0 3px 12px #0003; }
+.whatsapp-float:hover { background: #116d35; }
+.whatsapp-float:focus-visible { outline: 3px solid #003580; outline-offset: 4px; }
+.product-quantity { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.product-quantity button { display: flex; align-items: center; justify-content: center; width: 44px !important; min-width: 44px; max-width: 44px !important; height: 44px; border: 1px solid #d1d8d3; border-radius: 6px; background: #fff; cursor: pointer; }
+.product-quantity button:disabled { opacity: .45; cursor: not-allowed; }
+.product-quantity output { display: block; min-width: 30px; text-align: center; font-weight: 700; }
+.product-image.is-loading { background-color: #f4f6f5; }
+@media (max-width: 768px) {
+  .whatsapp-float { right: 14px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: 50px; height: 50px; }
+  .product-detail .product-detail-info .product-quantity button { width: 44px !important; max-width: 44px !important; flex: 0 0 44px; }
+}
 
 @media (max-width: 768px) {
   .product-detail { overflow-wrap: anywhere; }

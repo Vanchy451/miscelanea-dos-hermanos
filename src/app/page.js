@@ -120,6 +120,29 @@ export default function Home() {
   const [slideActual, setSlideActual] = useState(0);
   const [search, setSearch] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+  const [orden, setOrden] = useState("original");
+  useEffect(() => {
+    let guardado;
+    try { guardado = JSON.parse(sessionStorage.getItem("catalogo-retorno")); } catch { return; }
+    if (!guardado || window.location.hash && window.location.hash !== "#productos") return;
+    // Restore the previous catalog only after hydration.
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setSearch(typeof guardado.search === "string" ? guardado.search : "");
+    setCategoriaSeleccionada(typeof guardado.categoria === "string" ? guardado.categoria : "");
+    setOrden(["original", "precio-asc", "precio-desc", "nombre"].includes(guardado.orden) ? guardado.orden : "original");
+    /* eslint-enable react-hooks/set-state-in-effect */
+    let segundoFrame;
+    const frame = requestAnimationFrame(() => { segundoFrame = requestAnimationFrame(() => {
+      try { sessionStorage.removeItem("catalogo-retorno"); } catch { /* Storage may be unavailable. */ }
+      window.scrollTo({ top: Number.isFinite(guardado.y) ? guardado.y : 0, behavior: "instant" });
+    }); });
+    return () => { cancelAnimationFrame(frame); cancelAnimationFrame(segundoFrame); };
+  }, []);
+  const guardarCatalogo = (evento) => {
+    const enlace = evento.target.closest("a");
+    if (!enlace?.getAttribute("href")?.startsWith("/producto/")) return;
+    try { sessionStorage.setItem("catalogo-retorno", JSON.stringify({ search, categoria: categoriaSeleccionada, orden, y: window.scrollY })); } catch { /* Storage may be unavailable. */ }
+  };
   const { carrito, setCarrito, agregarAlCarrito, obtenerDisponibilidad } = useCarrito();
   const [productoAgregado, setProductoAgregado] = useState("");
   const [carritoAbierto, setCarritoAbierto] = useState(false);
@@ -279,6 +302,12 @@ const productosFiltrados = productos.filter((producto) => {
     normalizarBusqueda(producto.categoria) === normalizarBusqueda(categoriaSeleccionada);
 
   return coincideBusqueda && coincideCategoria;
+}).sort((a, b) => {
+  const precio = (producto) => Number(String(producto.precio).replace(/[^\d.]/g, "")) || 0;
+  if (orden === "precio-asc") return precio(a) - precio(b);
+  if (orden === "precio-desc") return precio(b) - precio(a);
+  if (orden === "nombre") return a.nombre.localeCompare(b.nombre, "es");
+  return 0;
 });
   const menuButton = {
     background: "transparent",
@@ -311,6 +340,7 @@ const productosFiltrados = productos.filter((producto) => {
 
  return (
   <main className="store-home"
+    onClickCapture={guardarCatalogo}
     style={{
       minHeight: "100vh",
       backgroundColor: "#f5f7fa",
@@ -849,9 +879,18 @@ const productosFiltrados = productos.filter((producto) => {
           >
             Productos destacados
           </h2>
-          <div className="mobile-only catalog-status" aria-live="polite">
+          <div className="catalog-status" aria-live="polite">
             <span>{categoriaSeleccionada || "Todos los productos"} · {productosFiltrados.length} resultados</span>
             {(categoriaSeleccionada || search) && <button type="button" onClick={() => { setCategoriaSeleccionada(""); setSearch(""); }}>Ver todos</button>}
+          </div>
+          <div className="catalog-order">
+            <label htmlFor="catalog-order">Ordenar por</label>
+            <select id="catalog-order" value={orden} onChange={(evento) => setOrden(evento.target.value)}>
+              <option value="original">Destacados</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+              <option value="nombre">Nombre: A a Z</option>
+            </select>
           </div>
 
 <div
@@ -1151,7 +1190,7 @@ const productosFiltrados = productos.filter((producto) => {
 
           <button
             type="button"
-            onClick={() => setCarritoAbierto(false)}
+            onClick={() => { setCarritoAbierto(false); requestAnimationFrame(() => document.getElementById("productos")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}
             style={{
               marginTop: "15px",
               padding: "12px 20px",

@@ -1,5 +1,6 @@
 import { CarritoProvider } from "./context/CarritoContext";
 import StructuredData from "./components/StructuredData";
+import WhatsAppButton from "./components/WhatsAppButton";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -101,6 +102,7 @@ export default function RootLayout({ children }) {
 
   <CarritoProvider>
     {children}
+    <WhatsAppButton />
   </CarritoProvider>
 </body>
     </html>

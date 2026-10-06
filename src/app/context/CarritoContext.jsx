@@ -64,7 +64,9 @@ export function CarritoProvider({ children }) {
     return { stock, cantidad, limiteAlcanzado: cantidad >= stock };
   };
 
-  const agregarAlCarrito = (producto) => {
+  const agregarAlCarrito = (producto, cantidadSolicitada = 1) => {
+    const cantidad = Math.floor(Number(cantidadSolicitada));
+    if (!Number.isFinite(cantidad) || cantidad < 1) return;
     setCarrito((carritoActual) => {
       const productoExistente = carritoActual.find(
         (item) => item.id === producto.id
@@ -79,7 +81,7 @@ export function CarritoProvider({ children }) {
           item.id === producto.id
             ? {
                 ...item,
-                cantidad: item.cantidad + 1,
+                cantidad: Math.min(stock, item.cantidad + cantidad),
               }
             : item
         );
@@ -89,7 +91,7 @@ export function CarritoProvider({ children }) {
         ...carritoActual,
         {
           ...producto,
-          cantidad: 1,
+          cantidad: Math.min(stock, cantidad),
         },
       ];
     });

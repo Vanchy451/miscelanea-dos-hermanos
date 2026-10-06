@@ -5,9 +5,11 @@ import { ImageOff } from "lucide-react";
 
 export default function ProductImage({ src, alt, style, className = "", ...props }) {
   const [imagenFallida, setImagenFallida] = useState(null);
+  const [imagenLista, setImagenLista] = useState(null);
   const comprobarImagen = useCallback((imagen) => {
     // An image can fail before React attaches its error handler during hydration.
     if (imagen?.complete && imagen.naturalWidth === 0) setImagenFallida(src);
+    if (imagen?.complete && imagen.naturalWidth > 0) setImagenLista(src);
   }, [src]);
   if (!src || imagenFallida === src) {
     return (
@@ -24,5 +26,5 @@ export default function ProductImage({ src, alt, style, className = "", ...props
   }
   // Preserve the original image dimensions and presentation when it loads.
   // eslint-disable-next-line @next/next/no-img-element
-  return <img ref={comprobarImagen} {...props} src={src} alt={alt} style={style} className={className} onError={() => setImagenFallida(src)} />;
+  return <img ref={comprobarImagen} loading="lazy" decoding="async" {...props} src={src} alt={alt} style={style} className={`${className} product-image ${imagenLista === src ? "is-loaded" : "is-loading"}`} onLoad={() => setImagenLista(src)} onError={() => setImagenFallida(src)} />;
 }
