@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UserRound } from "lucide-react";
 
 export default function Header({
   carrito,
@@ -84,6 +85,7 @@ export default function Header({
         </button>
 
         {/* CARRITO */}
+        <a href="/cuenta" className="header-account" title="Mi cuenta" aria-label="Mi cuenta"><UserRound size={22} aria-hidden="true" /></a>
         <button
           type="button"
           className="header-cart-button"
